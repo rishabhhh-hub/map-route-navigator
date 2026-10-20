@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map Route Navigator</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Map Route Navigator</h1>
+      <p class="tagline">Shortest paths computed by a C++ backend &mdash; Dijkstra vs. A*</p>
+    </div>
+    <div id="backend-status" class="pill pill-wait" role="status">Connecting to backend&hellip;</div>
+  </header>
+
+  <main class="layout">
+    <!-- ================= Controls ================= -->
+    <section class="panel controls" aria-labelledby="controls-title">
+      <h2 id="controls-title">Plan a route</h2>
+
+      <label for="start-select">Start</label>
+      <select id="start-select" disabled></select>
+
+      <label for="dest-select">Destination</label>
+      <select id="dest-select" disabled></select>
+
+      <label for="algo-select">Algorithm</label>
+      <select id="algo-select">
+        <option value="dijkstra">Dijkstra</option>
+        <option value="astar">A* (Euclidean heuristic)</option>
+      </select>
+
+      <div class="button-stack">
+        <button id="find-btn" class="btn btn-primary" type="button" disabled>Find Shortest Route</button>
+        <button id="compare-btn" class="btn" type="button" disabled>Compare Both Algorithms</button>
+        <button id="reset-btn" class="btn btn-ghost" type="button">Reset</button>
+      </div>
+
+      <label class="checkbox">
+        <input type="checkbox" id="show-weights" checked>
+        Show road weights on the map
+      </label>
+
+      <div id="error-banner" class="banner banner-error" role="alert" hidden></div>
+
+      <p class="hint">
+        Tip: click a node on the map to set the start, click another for the destination,
+        and click again to begin a new selection.
+      </p>
+
+      <ul class="legend" aria-label="Map legend">
+        <li><span class="swatch swatch-start"></span> Start</li>
+        <li><span class="swatch swatch-dest"></span> Destination</li>
+        <li><span class="swatch swatch-explored"></span> Explored</li>
+        <li><span class="swatch swatch-path"></span> Shortest path</li>
+      </ul>
+    </section>
+
+    <!-- ================= Map ================= -->
+    <section class="panel map-panel" aria-labelledby="map-title">
+      <h2 id="map-title" class="visually-hidden">Road network map</h2>
+      <div class="map-wrap" id="map-wrap" aria-busy="false">
+        <svg id="map" role="group" aria-label="Road network. Nodes are intersections, lines are roads."></svg>
+        <div id="loading" class="loading" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Asking the C++ backend&hellip;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Results ================= -->
+    <section class="panel results" id="results-panel" aria-labelledby="results-title" aria-live="polite">
+      <h2 id="results-title">Result</h2>
+      <p id="results-empty" class="muted">Choose a start and destination, then press <strong>Find Shortest Route</strong>.</p>
+      <dl id="results-list" class="result-grid" hidden>
+        <div><dt>Algorithm</dt><dd id="res-algorithm"></dd></div>
+        <div><dt>Path exists</dt><dd id="res-reachable"></dd></div>
+        <div><dt>Shortest distance</dt><dd id="res-distance"></dd></div>
+        <div><dt>Nodes explored</dt><dd id="res-explored"></dd></div>
+        <div><dt>Backend execution time</dt><dd id="res-time"></dd></div>
+        <div class="wide"><dt>Path</dt><dd id="res-path"></dd></div>
+        <div class="wide"><dt>Exploration order</dt><dd id="res-order"></dd></div>
+      </dl>
+    </section>
+
+    <!-- ================= Comparison ================= -->
+    <section class="panel comparison" id="comparison-panel" aria-labelledby="comparison-title" hidden>
+      <h2 id="comparison-title">Algorithm comparison</h2>
+      <div class="compare-cards" id="compare-cards"></div>
+      <div id="compare-summary" class="compare-summary"></div>
+      <p class="note">
+        <strong>About the timings:</strong> each number is a single measurement taken by the C++ server
+        on a very small graph. At this scale the times are tiny and noisy (they change from run to run
+        and depend on caching and CPU scheduling), so they should not be read as a universal ranking of
+        the two algorithms. A* is not always faster than Dijkstra; on this graph it may explore fewer,
+        the same number of, or even more nodes depending on the route.
+      </p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    All routes are calculated by the C++ backend (<code>POST /api/route</code>); this page only sends requests and draws the answers.
+  </footer>
+
+  <script src="/script.js" defer></script>
+</body>
+</html>
