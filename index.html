@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map Route Navigator</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>Map Route Navigator</h1>
+      <p>Shortest routes found by a C++ backend using Dijkstra and A*</p>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel controls-panel">
+      <div class="controls">
+        <label>Start
+          <select id="start"></select>
+        </label>
+        <label>Destination
+          <select id="destination"></select>
+        </label>
+        <label>Algorithm
+          <select id="algorithm">
+            <option value="dijkstra">Dijkstra</option>
+            <option value="astar">A*</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="buttons">
+        <button id="findBtn" class="primary">Find Shortest Route</button>
+        <button id="compareBtn" class="secondary">Compare Both Algorithms</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+      </div>
+
+      <p id="message"></p>
+    </section>
+
+    <section class="panel map-panel">
+      <svg id="map"></svg>
+      <div class="legend">
+        <span><i class="dot green"></i>Start</span>
+        <span><i class="dot red"></i>Destination</span>
+        <span><i class="dot orange"></i>Explored</span>
+        <span><i class="dot blue"></i>Shortest path</span>
+      </div>
+      <p class="hint">Tip: click two places on the map to choose the start and destination.</p>
+    </section>
+
+    <section id="result"></section>
+  </main>
+
+  <footer class="footer">All routes are calculated by the C++ server. This page only draws the answers.</footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

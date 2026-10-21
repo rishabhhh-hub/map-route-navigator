@@ -1,0 +1,202 @@
+/* ---------- colours (change them here) ---------- */
+:root {
+  --page-bg: #eaf0fa;
+  --card-bg: #ffffff;
+  --text: #1c2536;
+  --muted: #64708a;
+  --blue: #2563eb;
+  --blue-dark: #1e40af;
+  --teal: #0d9488;
+  --green: #16a34a;
+  --red: #dc2626;
+  --orange: #f59e0b;
+  --border: #d6deec;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, Arial, sans-serif;
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+/* ---------- header ---------- */
+.hero {
+  background: linear-gradient(120deg, #0f2a5c, #2563eb 60%, #0d9488);
+  color: white;
+  padding: 34px 16px 70px;
+}
+.hero-inner { max-width: 960px; margin: 0 auto; animation: fadeDown 0.7s ease both; }
+.hero h1 { margin: 0 0 6px; font-size: 2.2rem; }
+.hero p { margin: 0; opacity: 0.9; font-size: 1.05rem; }
+
+/* ---------- layout ---------- */
+.page {
+  max-width: 960px;
+  margin: -44px auto 0;   /* pulls the panels up over the header */
+  padding: 0 16px 24px;
+}
+
+.panel {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 6px 22px rgba(20, 40, 90, 0.1);
+  animation: fadeUp 0.6s ease both;
+}
+.map-panel { animation-delay: 0.1s; }
+
+/* ---------- controls ---------- */
+.controls { display: flex; flex-wrap: wrap; gap: 16px; }
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 190px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+select {
+  font-size: 1rem;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f7f9fd;
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+select:hover, select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+.buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+
+button {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+}
+button:hover { transform: translateY(-2px); }
+button:active { transform: translateY(0); }
+
+.primary { background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; }
+.primary:hover { box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35); }
+.secondary { background: white; color: var(--teal); border-color: var(--teal); }
+.secondary:hover { background: #e6f6f4; }
+.ghost { background: transparent; color: var(--muted); border-color: var(--border); }
+.ghost:hover { background: #f1f4fa; }
+
+#message { margin: 14px 0 0; }
+#message:not(:empty) {
+  background: #fdecec;
+  color: #9b1c1c;
+  padding: 10px 14px;
+  border-radius: 8px;
+  animation: fadeUp 0.3s ease both;
+}
+
+/* ---------- map ---------- */
+#map {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: radial-gradient(circle at 50% 40%, #ffffff, #e3ecfa);
+}
+
+.road { stroke: #a9b4c9; stroke-width: 2.5; stroke-linecap: round; }
+.road.path {
+  stroke: var(--blue);
+  stroke-width: 7;
+  stroke-dasharray: 1;        /* the line is drawn little by little */
+  animation: drawLine 0.5s ease forwards;
+}
+.weight { font-size: 11px; fill: var(--text); text-anchor: middle; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+
+.node circle {
+  fill: white;
+  stroke: #5b6b88;
+  stroke-width: 2.5;
+  cursor: pointer;
+  transition: fill 0.3s, stroke 0.3s;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.node:hover circle { stroke: var(--blue); transform: scale(1.2); }
+.node text { font-size: 11px; text-anchor: middle; pointer-events: none; fill: var(--text); }
+.node .id { font-weight: bold; }
+
+.node.explored circle { fill: var(--orange); stroke: #b45309; animation: pop 0.35s ease; }
+.node.onpath circle { stroke: var(--blue); stroke-width: 4; }
+.node.start circle { fill: var(--green); stroke: #166534; }
+.node.destination circle { fill: var(--red); stroke: #991b1b; }
+.node.start .id, .node.destination .id { fill: white; }
+
+/* ---------- legend ---------- */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 12px; font-size: 0.9rem; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.dot { display: inline-block; width: 13px; height: 13px; border-radius: 50%; }
+.dot.green { background: var(--green); }
+.dot.red { background: var(--red); }
+.dot.orange { background: var(--orange); }
+.dot.blue { background: var(--blue); }
+.hint { color: var(--muted); font-size: 0.9rem; margin: 8px 0 0; }
+
+/* ---------- results ---------- */
+.cards { display: flex; flex-wrap: wrap; gap: 18px; }
+.card {
+  flex: 1;
+  min-width: 270px;
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 6px 22px rgba(20, 40, 90, 0.1);
+  animation: fadeUp 0.5s ease both;
+  transition: transform 0.2s;
+}
+.card:hover { transform: translateY(-3px); }
+.card:nth-child(2) { animation-delay: 0.12s; }
+
+.badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 999px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.badge.dijkstra { background: var(--blue); }
+.badge.astar { background: var(--teal); }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.stat { background: #f2f6fd; border-radius: 10px; padding: 10px 12px; }
+.stat small { display: block; color: var(--muted); font-size: 0.78rem; }
+.stat b { font-size: 1.25rem; }
+.path-text { margin: 0; font-size: 0.92rem; line-height: 1.5; }
+.note { color: var(--muted); font-size: 0.9rem; margin-top: 14px; }
+
+.footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 6px 16px 26px; }
+
+/* ---------- animations ---------- */
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+@keyframes pop      { 0% { transform: scale(0.6); } 60% { transform: scale(1.35); } 100% { transform: scale(1); } }
+@keyframes drawLine { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* people who prefer less motion get no animation */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .road.path { stroke-dasharray: none; }
+}
